@@ -1,0 +1,111 @@
+# depslib dependency file v1.0
+1716110446 source:c:\users\sunny\desktop\hw\glm.cpp
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	"glm.h"
+
+1716110446 c:\users\sunny\desktop\hw\glm.h
+	<GL/glut.h>
+
+1716101731 c:\users\sunny\desktop\freeglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1716101731 c:\users\sunny\desktop\freeglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1716110447 source:c:\users\sunny\desktop\hw\main.cpp
+	<opencv/highgui.h>
+	<opencv/cv.h>
+	<GL/glut.h>
+	<GL/glut.h>
+	"glm.h"
+	<stdio.h>
+
+1716179995 source:c:\users\user\downloads\hw\glm.cpp
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	"glm.h"
+
+1716179995 c:\users\user\downloads\hw\glm.h
+	<GL/glut.h>
+
+1716179995 source:c:\users\user\desktop\hw\glm.cpp
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	"glm.h"
+
+1716179995 c:\users\user\desktop\hw\glm.h
+	<GL/glut.h>
+
+1716179808 c:\users\user\desktop\freeglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1716179808 c:\users\user\desktop\freeglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1716196326 source:c:\users\user\desktop\hw\main.cpp
+	<opencv/highgui.h>
+	<opencv/cv.h>
+	<GL/glut.h>
+	<GL/glut.h>
+	"glm.h"
+	<stdio.h>
+
+1716197879 source:c:\users\administrator\desktop\hw-20240613t061222z-001\hw\glm.cpp
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	"glm.h"
+
+1716197879 c:\users\administrator\desktop\hw-20240613t061222z-001\hw\glm.h
+	<GL/glut.h>
+
+1426320928 c:\users\administrator\desktop\freeglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1426320928 c:\users\administrator\desktop\freeglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1718266954 source:c:\users\administrator\desktop\hw-20240613t061222z-001\hw\main.cpp
+	<opencv/highgui.h>
+	<opencv/cv.h>
+	<GL/glut.h>
+	<GL/glut.h>
+	"glm.h"
+	<stdio.h>
+
