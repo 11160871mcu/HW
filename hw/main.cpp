@@ -28,6 +28,63 @@ GLMmodel *right_forearm = NULL;
 GLMmodel *left_shoulder = NULL;
 GLMmodel *left_forearm = NULL;
 GLMmodel *head = NULL;
+GLMmodel *left_leg = NULL;
+GLMmodel *right_leg = NULL;
+GLMmodel *left_second_leg = NULL;
+GLMmodel *right_second_leg = NULL;
+
+void drawRightLeg(void)
+{
+    if (!right_leg) {
+	right_leg = glmReadOBJ("data/right_leg.obj");
+	if (!right_leg) exit(0);
+	glmUnitize(right_leg);
+	glmFacetNormals(right_leg);
+	glmVertexNormals(right_leg, 90.0);
+	glmScale(right_leg, 0.5f);
+    }
+    glmDraw(right_leg, GLM_SMOOTH | GLM_TEXTURE);
+}
+
+void drawLeftLeg(void)
+{
+    if (!left_leg) {
+	left_leg = glmReadOBJ("data/left_leg.obj");
+	if (!left_leg) exit(0);
+	glmUnitize(left_leg);
+	glmFacetNormals(left_leg);
+	glmVertexNormals(left_leg, 90.0);
+	glmScale(left_leg, 0.5f);
+    }
+    glmDraw(left_leg, GLM_SMOOTH | GLM_TEXTURE);
+}
+
+void drawRightSecondLeg(void)
+{
+    if (!right_second_leg) {
+	right_second_leg = glmReadOBJ("data/right_second_leg.obj");
+	if (!right_second_leg) exit(0);
+	glmUnitize(right_second_leg);
+	glmFacetNormals(right_second_leg);
+	glmVertexNormals(right_second_leg, 90.0);
+	glmScale(right_second_leg, 0.2f);
+    }
+    glmDraw(right_second_leg, GLM_SMOOTH | GLM_TEXTURE);
+}
+
+void drawLeftSecondLeg(void)
+{
+    if (!left_second_leg) {
+	left_second_leg = glmReadOBJ("data/left_second_leg.obj");
+	if (!left_second_leg) exit(0);
+	glmUnitize(left_second_leg);
+	glmFacetNormals(left_second_leg);
+	glmVertexNormals(left_second_leg, 90.0);
+	glmScale(left_second_leg, 0.2f);
+    }
+    glmDraw(left_second_leg, GLM_SMOOTH | GLM_TEXTURE);
+}
+
 
 void drawBody(void)
 {
@@ -194,16 +251,16 @@ void keyboard(unsigned char key ,int x,int y){
     if(key=='7')    angleID=7;
     if(key=='8')    angleID=8;
     if(key=='9')    angleID=9;
-    if(key=='q')    angleID=10;
-    if(key=='w')    angleID=11;
-    if(key=='e')    angleID=12;
-    if(key=='t')    angleID=13;
-    if(key=='y')    angleID=14;
-    if(key=='u')    angleID=15;
-    if(key=='i')    angleID=16;
-    if(key=='o')    angleID=17;
-    if(key=='z')    angleID=18;
-    if(key=='x')    angleID=19;
+    if(key=='z')    angleID=10;
+    if(key=='x')    angleID=11;
+    if(key=='c')    angleID=12;
+    if(key=='v')    angleID=13;
+    if(key=='b')    angleID=14;
+    if(key=='n')    angleID=15;
+    if(key=='m')    angleID=16;
+    if(key=='q')    angleID=17;
+    if(key=='w')    angleID=18;
+    if(key=='e')    angleID=19;
 
 }///記得在int main()裡面加glutKeyBoardFunc(keyboard)
 
@@ -220,7 +277,39 @@ void display()
         ///glTranslatef(teapotX,teapotY, 0);
         glRotatef(angle[0],0,1,0);
         drawBody();
-        glPushMatrix();
+        glPushMatrix();///頭
+            glTranslatef(-0.004, 0.304, 0);
+            glRotatef(angle[13],0,1,0);
+            glTranslatef(0.000, 0.100, 0);
+            drawHead();
+        glPopMatrix();
+        glPushMatrix();///右腳
+            glTranslatef(0.132, -0.228, 0);
+            glRotatef(angle[16],1,0,0);
+            glRotatef(angle[15],0,1,0);
+            glTranslatef(0.008, -0.160, 0);
+            drawRightLeg();
+            glPushMatrix();
+                glTranslatef(0.004, -0.176, 0);
+                glRotatef(angle[14],1,0,0);
+                glTranslatef(0.004, -0.140, 0);
+                drawRightSecondLeg();
+            glPopMatrix();
+        glPopMatrix();
+        glPushMatrix();///左腳
+            glTranslatef(-0.148, -0.232, 0);
+            glRotatef(angle[19],1,0,0);
+            glRotatef(angle[18],0,1,0);
+            glTranslatef(0.008, -0.160, 0);
+            drawLeftLeg();
+            glPushMatrix();
+                glTranslatef(-0.000, -0.160, 0);
+                glRotatef(angle[17],1,0,0);
+                glTranslatef(0.008, -0.160, 0);
+                drawLeftSecondLeg();
+                glPopMatrix();
+        glPopMatrix();
+        glPushMatrix();///右手
             glTranslatef(0.224, 0.248, 0);
             glRotatef(angle[12],0,0,1);
             glRotatef(angle[11],1,0,0);
@@ -236,8 +325,7 @@ void display()
                 drawRightForearm();
             glPopMatrix();
         glPopMatrix();
-
-        glPushMatrix();
+        glPushMatrix();///左手
             glTranslatef(-0.216, 0.228, 0);
             glRotatef(angle[6],0,0,1);
             glRotatef(angle[5],1,0,0);
@@ -253,6 +341,7 @@ void display()
                 drawLeftForearm();
             glPopMatrix();
         glPopMatrix();
+        ///glTranslatef(teapotX,teapotY, 0);
     glPopMatrix();
     glutSwapBuffers();
 }
