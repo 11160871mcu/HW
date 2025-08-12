@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音訊上傳與分析</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .nav-link { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>音訊上傳</h1>
+    <div class="nav-link">
+        <a href="{{ url_for('main.history') }}">查看歷史分析紀錄 &rarr;</a>
+    </div>
+    <form method="post" action="{{ url_for('main.upload') }}" enctype="multipart/form-data">
+        <label>選擇音訊檔案：</label>
+        <input type="file" name="file" accept=".wav,.mp3" required><br><br>
+
+        <label>每段長度（秒）：</label>
+        <input type="number" name="segment_duration" step="0.1" value="2" required><br><br>
+
+        <label>重疊率（0~1）：</label>
+        <input type="number" name="overlap" step="0.1" value="0.4" required><br><br>
+
+        <label>頻譜圖類型：</label>
+        <select name="spec_type">
+            <option value="mel">Mel Spectrogram</option>
+            <option value="stft">STFT</option>
+        </select><br><br>
+
+        <button type="submit">上傳並產生頻譜圖</button>
+    </form>
+</body>
+</html>

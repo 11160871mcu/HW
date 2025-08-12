@@ -1,0 +1,12 @@
+Flask
+librosa
+matplotlib
+numpy
+scipy
+werkzeug
+Flask-SQLAlchemy
+PyMySQL
+cryptography
+ultralytics
+torch
+torchvision

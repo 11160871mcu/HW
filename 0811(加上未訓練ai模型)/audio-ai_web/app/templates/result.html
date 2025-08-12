@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>分析結果 - {{ upload.original_filename }}</title>
+    <style>
+        /* CSS 樣式維持不變 */
+        body { font-family: sans-serif; }
+        table { width: 90%; margin: 20px auto; border-collapse: collapse; }
+        td, th { border: 1px solid #aaa; padding: 10px; text-align: center; vertical-align: top;}
+        img { max-width: 400px; height: auto; display: block; }
+        audio { width: 300px; }
+        .back-button-container { text-align: center; margin: 20px 0; }
+        .back-button { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }
+        .back-button:hover { background-color: #0056b3; }
+        .info { text-align: center; margin-bottom: 20px; }
+        .result-container { position: relative; display: inline-block; line-height: 0; }
+        .bbox { position: absolute; border: 2px solid red; box-sizing: border-box; pointer-events: none; }
+        .bbox-label { position: absolute; top: -20px; left: 0; background-color: red; color: white; padding: 2px 4px; font-size: 12px; white-space: nowrap; }
+        .detections-list { text-align: left; padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">分析結果</h2>
+    <div class="info">
+        <p><strong>原始檔案:</strong> {{ upload.original_filename }}</p>
+        <p><strong>分析時間:</strong> {{ upload.upload_timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+    <div class="back-button-container">
+        <a href="{{ url_for('main.history') }}" class="back-button">返回歷史紀錄</a>
+        <a href="{{ url_for('main.index') }}" class="back-button">返回上傳頁面</a>
+    </div>
+    <table>
+        <tr>
+            <th>音訊片段</th>
+            <th>頻譜圖與 AI 分析結果</th>
+        </tr>
+        {% for item in upload.results %}
+        <tr>
+            <td>
+                <audio controls><source src="{{ url_for('static', filename=item.audio_url) }}" type="audio/wav"></audio>
+            </td>
+            <td>
+                <div class="result-container">
+                    <img src="{{ url_for('static', filename=item.spectrogram_url) }}" alt="spectrogram" id="img-{{ item.id }}">
+                </div>
+                <div class="detections-list">
+                    <h4>偵測到的物件:</h4>
+                    <ul>
+                        {% for detection in item.get_detections() %}
+                        <li>{{ detection.label }} (信心度: {{ detection.confidence }})</li>
+                        {% else %}
+                        <li>無</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <script>
+                (function() {
+                    // --- Debug Step 1: 檢查傳入的資料 ---
+                    console.log("--- 開始執行 JavaScript for item ID: {{ item.id }} ---");
+                    const detections = {{ item.get_detections()|tojson }};
+                    console.log("收到的 Detections 資料:", detections);
+
+                    const imgElement = document.getElementById('img-{{ item.id }}');
+                    const container = imgElement.parentNode;
+                    
+                    if (!imgElement || !container) {
+                        console.error("錯誤：找不到圖片或容器元素！");
+                        return;
+                    }
+
+                    const drawBoxes = () => {
+                        console.log("`drawBoxes` 函式被執行了。");
+
+                        const originalWidth = 600;
+                        const displayedWidth = imgElement.clientWidth;
+                        
+                        // --- Debug Step 2: 檢查尺寸和比例 ---
+                        console.log("原始寬度 (預設):", originalWidth);
+                        console.log("圖片實際顯示寬度:", displayedWidth);
+
+                        if (displayedWidth === 0) {
+                            console.error("錯誤：圖片顯示寬度為 0，無法計算比例。");
+                            return;
+                        }
+                        
+                        const scale = displayedWidth / originalWidth;
+                        console.log("計算出的縮放比例:", scale);
+
+                        detections.forEach((det, index) => {
+                            const box = det.box;
+                            
+                            // --- Debug Step 3: 檢查每一次的座標換算 ---
+                            console.log(`--- 正在處理第 ${index + 1} 個偵測框 ---`);
+                            console.log("原始座標 (box):", box);
+
+                            const newX1 = box[0] * scale;
+                            const newY1 = box[1] * scale;
+                            const newWidth = (box[2] - box[0]) * scale;
+                            const newHeight = (box[3] - box[1]) * scale;
+                            
+                            console.log("換算後的新座標 (x, y, w, h):", newX1, newY1, newWidth, newHeight);
+
+                            const bboxDiv = document.createElement('div');
+                            bboxDiv.className = 'bbox';
+                            bboxDiv.style.left = newX1 + 'px';
+                            bboxDiv.style.top = newY1 + 'px';
+                            bboxDiv.style.width = newWidth + 'px';
+                            bboxDiv.style.height = newHeight + 'px';
+                            
+                            const labelDiv = document.createElement('div');
+                            labelDiv.className = 'bbox-label';
+                            labelDiv.innerText = `${det.label} (${det.confidence})`;
+                            
+                            bboxDiv.appendChild(labelDiv);
+                            container.appendChild(bboxDiv);
+
+                            console.log("一個偵測框已被成功附加到頁面上。");
+                        });
+                    };
+
+                    if (imgElement.complete) {
+                        console.log("圖片已載入 (來自快取)，直接繪圖。");
+                        drawBoxes();
+                    } else {
+                        console.log("圖片尚未載入，正在設定 onload 監聽器。");
+                        imgElement.addEventListener('load', drawBoxes);
+                    }
+                })();
+                </script>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

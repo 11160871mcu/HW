@@ -1,0 +1,45 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./app
+          target: /app
+    environment:
+      - DATABASE_URL=mysql+pymysql://user:password@db/audio_db
+      - FLASK_APP=__init__:create_app
+      - FLASK_ENV=development
+    
+    # --- ▼▼▼ 修改/新增這個區塊 ▼▼▼ ---
+    depends_on:
+      db:
+        condition: service_healthy # 告訴 web 服務，等待 db 服務回報 "healthy" 之後再啟動
+    # --- ▲▲▲ 修改/新增這個區塊 ▲▲▲ ---
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'audio_db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'rootpassword'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    # --- ▼▼▼ 新增這個 healthcheck 區塊 ▼▼▼ ---
+    # 定義如何判斷 db 服務是否 "健康"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # --- ▲▲▲ 新增這個 healthcheck 區塊 ▲▲▲ ---
+
+volumes:
+  mysql_data:

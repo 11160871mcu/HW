@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分析歷史紀錄</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .nav-link { margin-bottom: 10px; }
+        .sort-options { margin-bottom: 20px; }
+        .sort-options a { margin-right: 15px; }
+        .sort-options .active { font-weight: bold; color: black; text-decoration: none; }
+        .delete-button {
+            color: red; 
+            background: none; 
+            border: none; 
+            padding: 0; 
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 1em;
+        }
+        .delete-button:hover {
+            color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <h1>分析歷史紀錄</h1>
+    <div class="nav-link">
+        <a href="{{ url_for('main.index') }}">&larr; 返回上傳頁面</a>
+    </div>
+
+    <div class="sort-options">
+        <span>排序方式：</span>
+        <a href="{{ url_for('main.history', sort='desc') }}" class="{{ 'active' if current_sort == 'desc' else '' }}">
+            由新到舊
+        </a>
+        <a href="{{ url_for('main.history', sort='asc') }}" class="{{ 'active' if current_sort == 'asc' else '' }}">
+            由舊到新
+        </a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>序號</th> <th>原始檔案名稱 (資料庫ID)</th>
+                <th>分析時間</th>
+                <th>參數</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for upload in uploads %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ upload.original_filename }} ({{ upload.id }})</td>
+                <td>{{ upload.upload_timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>
+                    <ul>
+                    {% for key, value in upload.get_params().items() %}
+                        <li><strong>{{ key }}:</strong> {{ value }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <a href="{{ url_for('main.results', upload_id=upload.id) }}">查看結果</a>
+                    <form 
+                        action="{{ url_for('main.delete_upload', upload_id=upload.id) }}" 
+                        method="post" 
+                        style="display:inline; margin-left: 10px;"
+                        onsubmit="return confirm('您確定要刪除這筆紀錄嗎 (ID: {{ upload.id }})？所有相關檔案將被永久移除。');">
+                        <button type="submit" class="delete-button">刪除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
